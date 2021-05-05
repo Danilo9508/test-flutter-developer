@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:test_developer_flutter/src/models/modelDataSuperHeroe.dart';
@@ -22,12 +21,7 @@ class Api {
   Future<List<DataSuperHeroe>> getData() async {
     try {
       final Response response = await this._dio.get('/login');
-      print(response.data);
-      return DataSuperHeroe.fromJson(response.data.data) != null
-          ? (jsonDecode(response.data.data) as List)
-              .map((data) => DataSuperHeroe.fromJson(data))
-              .toList()
-          : [];
+      return DataJson.fromJson(response.data).data;
     } catch (e) {
       print(
           "-------------5656-----------------------------------------------------");

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:test_developer_flutter/src/provider/dataProvaiders.dart';
 import 'package:test_developer_flutter/src/util/desingApp.dart';
 
 class DataResultWidget extends StatelessWidget {
+  final String name, pantoneValue;
+  final int color;
+  DataResultWidget({this.name, this.pantoneValue, this.color});
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvaider>(context);
     return Container(
+      padding: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -16,24 +23,41 @@ class DataResultWidget extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
-            height: 5,
-          ),
-          Container(
-            child: Text(
-              "Datos del Superhéroe",
-              style: AppFonts.styleTextTitle,
+      child: dataProvider.data != null
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 5,
+                ),
+                Container(
+                  child: Text(
+                    "Datos del Superhéroe",
+                    style: AppFonts.styleTextTitle,
+                  ),
+                ),
+                _dataForm("Nombre", '${dataProvider.data.name}'),
+                _dataForm("Año", '${dataProvider.data.year}'),
+                _dataForm("Pantone_Value", '${dataProvider.data.pantoneValue}'),
+                _dataIcon("Color", '${dataProvider.data.color}')
+              ],
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Sin Información",
+                  style: AppFonts.styleTextTitle,
+                ),
+                Center(
+                  child: Image.asset("assets/images/question.png"),
+                ),
+                Text(
+                  "Presiona el siguiente Botón para buscar",
+                  style: AppFonts.styleTextValue,
+                ),
+              ],
             ),
-          ),
-          _dataForm("Nombre", "value"),
-          _dataForm("Año", "value"),
-          _dataForm("Pantone_Value", "value"),
-          _dataIcon("Color", "")
-        ],
-      ),
     );
   }
 
@@ -99,6 +123,7 @@ class DataResultWidget extends StatelessWidget {
               child: Icon(
                 Icons.accessibility_new,
                 size: 60,
+                color: HexColor.fromHex(value),
               ),
             ),
           ),

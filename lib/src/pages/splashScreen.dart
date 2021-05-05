@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
+import 'package:test_developer_flutter/src/provider/dataProvaiders.dart';
 import 'package:test_developer_flutter/src/util/desingApp.dart';
 import 'package:test_developer_flutter/src/util/navigator.dart';
-
-import 'home.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -89,9 +88,15 @@ class _SplashScreenState extends State<SplashScreen>
             (status) {
               if (status == AnimationStatus.completed) {
                 MyNavigator.goToHome(context);
+                getData(context);
               }
             },
           );
+  }
+
+  void getData(BuildContext context) async {
+    final dataProvider = Provider.of<DataProvaider>(context);
+    await dataProvider.getData();
   }
 
   @override

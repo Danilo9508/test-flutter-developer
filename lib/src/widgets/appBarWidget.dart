@@ -12,7 +12,7 @@ class AppBarWidget extends StatelessWidget {
           child: Text(
             "Prueba Técnica",
             style: TextStyle(
-              color: Colors.white70,
+              color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 25,
               fontFamily: 'Roboto',
@@ -23,7 +23,7 @@ class AppBarWidget extends StatelessWidget {
           width: _screenWidth / 3,
           height: 50,
           margin: EdgeInsets.all(16),
-          child: Image.asset("assets/images/logo.png"),
+          child: Image.asset("assets/images/logo2.png"),
         ),
       ],
     );

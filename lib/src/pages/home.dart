@@ -5,6 +5,7 @@ import 'package:test_developer_flutter/src/util/desingApp.dart';
 import 'package:test_developer_flutter/src/util/navigator.dart';
 import 'package:test_developer_flutter/src/widgets/appBarWidget.dart';
 import 'package:test_developer_flutter/src/widgets/dataResultWidget.dart';
+import 'dart:math';
 
 class Home extends StatefulWidget {
   @override
@@ -13,23 +14,18 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   double screenHeight = 0, screenWidth = 0;
-  @override
-  void initState() {
-    getData();
-    super.initState();
-  }
-
-  void getData() async {
-    final dataProvider = Provider.of<DataProvaider>(context);
-    await dataProvider.getData();
-  }
 
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+    final dataProvider = Provider.of<DataProvaider>(context);
     return WillPopScope(
+      // ignore: missing_return
       onWillPop: () {
+        //limpia los datos al presionar el boton retroceso (opcional)
+        dataProvider.data = null;
+        dataProvider.listData = [];
         MyNavigator.goToSplash(context);
       },
       child: Scaffold(
@@ -75,26 +71,32 @@ class _HomeState extends State<Home> {
                             padding: EdgeInsets.symmetric(vertical: 15.0),
                             width: screenWidth,
                             height: 90,
-                            child: RaisedButton(
-                              onPressed: () {},
-                              padding: EdgeInsets.all(15.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  30.0,
-                                ),
-                              ),
-                              color: AppColors.colorPrimaryApp,
-                              child: Text(
-                                'Buscar Superhéroe',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  letterSpacing: 1.5,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Roboto',
-                                ),
-                              ),
-                            ),
+                            child: dataProvider.stateDataApi
+                                ? RaisedButton(
+                                    onPressed: () => getDataId(),
+                                    padding: EdgeInsets.all(15.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        30.0,
+                                      ),
+                                    ),
+                                    color: AppColors.colorPrimaryApp,
+                                    child: Text(
+                                      'Buscar Superhéroe',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        letterSpacing: 1.5,
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                  )
+                                : Center(
+                                    child: Container(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
                           )
                         ],
                       ),
@@ -110,7 +112,28 @@ class _HomeState extends State<Home> {
   }
 
   /*
-   * cramos la cabecera del diseño (appBar).
+  * genera un numero al azar y obtiene la informacion del superhéroe
+  */
+  getDataId() async {
+    Random random = new Random();
+    int randomNumber = 1 + random.nextInt(7 - 1);
+    final dataProvider = Provider.of<DataProvaider>(context);
+    if (dataProvider.stateDataApi) {
+      await dataProvider.getDataId(randomNumber);
+      dataProvider.data != null
+          ? setState(() {
+              dataProvider.data = dataProvider.data;
+            })
+          : setState(() {
+              dataProvider.data = null;
+            });
+    } else {
+      await dataProvider.getData();
+    }
+  }
+
+  /*
+   * creamos la cabecera del diseño (appBar).
    * return: Widget Column
    */
   Widget _buildHeader() {
